@@ -43,7 +43,3 @@ textures/vram_compression/import_etc2_astc=true
 2d/batching/item_buffer_size=32768
 2d/batching/uniform_set_cache_size=8192
 limits/global_shader_variables/buffer_size=262144
-
-[threading]
-
-worker_pool/max_threads=1

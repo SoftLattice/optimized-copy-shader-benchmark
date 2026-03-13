@@ -81,14 +81,14 @@ func _run_execution(iter: int) -> void:
     # Randomly select which shader to try first
     if iter % 2 == 0:
         key = "original"
-        original_copy.execute_benchmark(false)
+        original_copy.execute_benchmark(true)
         key = "new"
-        new_copy.execute_benchmark(false)
+        new_copy.execute_benchmark(true)
     else:
         key = "new"
-        new_copy.execute_benchmark(false)
+        new_copy.execute_benchmark(true)
         key = "original"
-        original_copy.execute_benchmark(false)
+        original_copy.execute_benchmark(true)
 
     # Images were set during _post_execute callback
     var result_size: Vector2i = result_images["original"].get_size();

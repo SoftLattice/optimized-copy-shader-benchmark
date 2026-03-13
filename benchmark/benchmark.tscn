@@ -85,6 +85,17 @@ size_flags_horizontal = 3
 expand_mode = 3
 stretch_mode = 5
 
+[node name="Label" type="Label" parent="HBoxContainer/PanelContainer/VBoxContainer/ShaderBenchmarkOld" unique_id=1306071573]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Old Shader"
+
 [node name="ShaderBenchmarkNew" type="Control" parent="HBoxContainer/PanelContainer/VBoxContainer" unique_id=1339134196]
 layout_mode = 2
 size_flags_vertical = 3
@@ -111,6 +122,17 @@ layout_mode = 2
 size_flags_horizontal = 3
 expand_mode = 3
 stretch_mode = 5
+
+[node name="Label" type="Label" parent="HBoxContainer/PanelContainer/VBoxContainer/ShaderBenchmarkNew" unique_id=600423054]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "New Shader"
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer" unique_id=435465482]
 layout_mode = 2

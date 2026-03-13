@@ -165,8 +165,6 @@ func _initialize_pipeline(im: Image, shader_version: String) -> void:
             RenderingDevice.TEXTURE_USAGE_STORAGE_BIT | \
             RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
 
-    print(output_format.width, output_format.height)
-
     output_rid = rd.texture_create(output_format, RDTextureView.new())
 
     output_uniform = RDUniform.new()
@@ -181,7 +179,7 @@ func _initialize_pipeline(im: Image, shader_version: String) -> void:
 
 func execute_benchmark(display_image: bool = false) -> void:
     rd.submit()
-    rd.sync()
+    rd.sync ()
 
     var compute_list: int = rd.compute_list_begin()
     rd.capture_timestamp("start_calc")
@@ -195,7 +193,7 @@ func execute_benchmark(display_image: bool = false) -> void:
     rd.capture_timestamp("stop_calc")
 
     rd.submit()
-    rd.sync()
+    rd.sync ()
 
     var delta: int = rd.get_captured_timestamp_gpu_time(1) - rd.get_captured_timestamp_gpu_time(0)
     var average_execution_time: float = delta / (SAMPLE_ITERATIONS * 1000.0)
