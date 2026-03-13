@@ -1,0 +1,180 @@
+[gd_scene format=3 uid="uid://c6j8f7r7cqmj1"]
+
+[ext_resource type="Script" uid="uid://cobcaun2grcxb" path="res://benchmark/common_values.gd" id="1_1qedq"]
+[ext_resource type="Script" uid="uid://cv4j784yb4bl6" path="res://benchmark/benchmark.gd" id="1_rngpm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pl4w"]
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1qedq"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.101960786, 0.5294118, 0.101960786, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="Control" type="Control" unique_id=1203827089 node_paths=PackedStringArray("results_label", "original_copy", "new_copy", "shader_dropdown", "image_size", "first_glow_pass")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1qedq")
+results_label = NodePath("HBoxContainer/MarginContainer/VBoxContainer2/ResultSummary")
+original_copy = NodePath("HBoxContainer/PanelContainer/VBoxContainer/ShaderBenchmarkOld")
+new_copy = NodePath("HBoxContainer/PanelContainer/VBoxContainer/ShaderBenchmarkNew")
+shader_dropdown = NodePath("HBoxContainer/MarginContainer/VBoxContainer2/ShaderVariant")
+image_size = NodePath("HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ImageSize")
+first_glow_pass = NodePath("HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/FirstGlowPass")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=428877267]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer" unique_id=1899816349]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_5pl4w")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer" unique_id=1206414863]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ShaderBenchmarkOld" type="Control" parent="HBoxContainer/PanelContainer/VBoxContainer" unique_id=2002211731]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("1_rngpm")
+shader_file = "uid://dtn7gxytvwmve"
+initial_shader_version = "default"
+
+[node name="TextureComparison" type="HBoxContainer" parent="HBoxContainer/PanelContainer/VBoxContainer/ShaderBenchmarkOld" unique_id=544635141]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InputRect" type="TextureRect" parent="HBoxContainer/PanelContainer/VBoxContainer/ShaderBenchmarkOld/TextureComparison" unique_id=848224859]
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 3
+stretch_mode = 5
+
+[node name="ResultRect" type="TextureRect" parent="HBoxContainer/PanelContainer/VBoxContainer/ShaderBenchmarkOld/TextureComparison" unique_id=151004857]
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 3
+stretch_mode = 5
+
+[node name="ShaderBenchmarkNew" type="Control" parent="HBoxContainer/PanelContainer/VBoxContainer" unique_id=1339134196]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("1_rngpm")
+shader_file = "uid://b3hpxfd2qqh6q"
+initial_shader_version = "default"
+
+[node name="TextureComparison" type="HBoxContainer" parent="HBoxContainer/PanelContainer/VBoxContainer/ShaderBenchmarkNew" unique_id=2123437934]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InputRect" type="TextureRect" parent="HBoxContainer/PanelContainer/VBoxContainer/ShaderBenchmarkNew/TextureComparison" unique_id=1409903396]
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 3
+stretch_mode = 5
+
+[node name="ResultRect" type="TextureRect" parent="HBoxContainer/PanelContainer/VBoxContainer/ShaderBenchmarkNew/TextureComparison" unique_id=997473704]
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 3
+stretch_mode = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer" unique_id=435465482]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer/MarginContainer" unique_id=1189336917]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ShaderVariant" type="OptionButton" parent="HBoxContainer/MarginContainer/VBoxContainer2" unique_id=2121964554]
+layout_mode = 2
+selected = 1
+item_count = 2
+popup/item_0/text = "default"
+popup/item_0/id = 0
+popup/item_1/text = "glow"
+popup/item_1/id = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1621542798]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1977495973]
+layout_mode = 2
+text = "Size:"
+
+[node name="ImageSize" type="SpinBox" parent="HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1377629818]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 8.0
+max_value = 2048.0
+value = 1024.0
+rounded = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1954626328]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2" unique_id=515491189]
+layout_mode = 2
+text = "Glow First Pass"
+
+[node name="FirstGlowPass" type="CheckBox" parent="HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2" unique_id=285095510]
+layout_mode = 2
+size_flags_horizontal = 6
+button_pressed = true
+
+[node name="ResultSummary" type="Label" parent="HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1146604413]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="Execute" type="Button" parent="HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1342439485]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_styles/normal = SubResource("StyleBoxFlat_1qedq")
+text = "Start Test"
+
+[connection signal="test_completed" from="." to="HBoxContainer/MarginContainer/VBoxContainer2/Execute" method="set_disabled" binds= [false]]
+[connection signal="test_completed" from="." to="HBoxContainer/MarginContainer/VBoxContainer2/Execute" method="set_text" binds= ["Start Test"]]
+[connection signal="item_selected" from="HBoxContainer/MarginContainer/VBoxContainer2/ShaderVariant" to="." method="initialize_data" unbinds=1]
+[connection signal="value_changed" from="HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ImageSize" to="." method="initialize_data" unbinds=1]
+[connection signal="toggled" from="HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/FirstGlowPass" to="." method="initialize_data" unbinds=1]
+[connection signal="pressed" from="HBoxContainer/MarginContainer/VBoxContainer2/Execute" to="." method="_on_execute_benchmark" flags=3]
+[connection signal="pressed" from="HBoxContainer/MarginContainer/VBoxContainer2/Execute" to="HBoxContainer/MarginContainer/VBoxContainer2/Execute" method="set_disabled" binds= [true]]
+[connection signal="pressed" from="HBoxContainer/MarginContainer/VBoxContainer2/Execute" to="HBoxContainer/MarginContainer/VBoxContainer2/Execute" method="set_text" binds= ["Running..."]]

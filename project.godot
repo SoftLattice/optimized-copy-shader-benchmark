@@ -1,0 +1,49 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Copy Shader Benchmarking"
+run/main_scene="uid://c6j8f7r7cqmj1"
+config/features=PackedStringArray("4.6", "Forward Plus")
+run/delta_smoothing=false
+config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=768
+window/size/viewport_height=512
+window/vsync/vsync_mode=0
+
+[editor]
+
+movie_writer/disable_vsync=true
+
+[memory]
+
+limits/message_queue/max_size_mb=256
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/vsync/swapchain_image_count=2
+rendering_device/pipeline_cache/enable=false
+rendering_device/pipeline_cache/save_chunk_size_mb=64.000001
+textures/vram_compression/import_etc2_astc=true
+2d/batching/item_buffer_size=32768
+2d/batching/uniform_set_cache_size=8192
+limits/global_shader_variables/buffer_size=262144
+
+[threading]
+
+worker_pool/max_threads=1
