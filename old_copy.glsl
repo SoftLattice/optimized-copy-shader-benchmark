@@ -1,14 +1,13 @@
 #[versions]
 default = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT";
 glow = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT\n#define MODE_GLOW";
+safe = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT\n#define MODE_GLOW\n#define SAFE_THREADING";
 
 #[compute]
 
 #version 450
 
-
 #VERSION_DEFINES
-
 
 layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
