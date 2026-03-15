@@ -56,9 +56,9 @@ func prepare_image() -> Image:
     for x in range(IMAGE_SIZE):
         for y in range(IMAGE_SIZE):
             var color_floats: Array[float] = [0, 0, 0, 1]
-            for channel in range(4):
+            for channel in range(3):
                 color_floats[channel] = channel_colors[channel].get_pixel(x, y).r
-            image.set_pixel(x, y, Color(color_floats[0], color_floats[1], color_floats[2], color_floats[3]))
+            image.set_pixel(x, y, Color(color_floats[0], color_floats[1], color_floats[2], 1.))
 
     return image
 
@@ -104,7 +104,7 @@ func _run_execution(iter: int) -> void:
     for x in range(result_size.x):
         for y in range(result_size.y):
             var color_d: Color = result_images["original"].get_pixel(x, y) - result_images["new"].get_pixel(x, y)
-            color_d = Color(absf(color_d.r), absf(color_d.g), absf(color_d.b), absf(color_d.a))
+            color_d = Color(absf(color_d.r), absf(color_d.g), absf(color_d.b), 0.)
             color_diff_max = maxf(color_diff_max, maxf(color_d.r, maxf(color_d.g, color_d.b)))
             color_diff += color_d
 
