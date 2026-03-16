@@ -1,7 +1,8 @@
 #[versions]
 default = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT";
 glow = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT\n#define MODE_GLOW";
-safe = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT\n#define	MODE_GLOW\n#define SAFE_THREADING";
+trust_ballot = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT\n#define MODE_GLOW\n#define BALLOT_SUBGROUP_SIZE";
+trust_nothing = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT\n#define MODE_GLOW\n#define SAFE_THREADING\n#define BALLOT_SUBGROUP_SIZE";
 
 #[compute]
 
@@ -9,7 +10,7 @@ safe = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT\n#define	MODE_GLOW\n#
 
 #VERSION_DEFINES
 
-#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_shader_subgroup_ballot : enable
 
 // #include "../oct_inc.glsl"
 
@@ -107,22 +108,29 @@ void main() {
 #endif
 
 	// First pass copy texture into 16x16 local memory for every 8x8 thread block
+#ifdef BALLOT_SUBGROUP_SIZE
+	const uint subgroup_size = subgroupBallotBitCount(subgroupBallot(true));
+	const uint num_subgroups = (gl_WorkGroupSize.x * gl_WorkGroupSize.y) / subgroup_size;
+#else
+	const uint num_subgroups = gl_NumSubgroups;
+	const uint subgroup_size = (gl_WorkGroupSize.x * gl_WorkGroupSize.y) / num_subgroups;
+#endif
 
 	// To avoid bank conflicts, linear index "i" in the 16x16 grid will be placed at
 	// i_write according to the equation:
 	// i_write = i ^ ((i & shuffle_mask) >> 1)
 
 	// Compute optimal shuffle mask for the number of subgroups
-	const uint shuffle_mask = (0x70u / gl_NumSubgroups) & 0x70u;
+	const uint shuffle_mask = (0x70u / num_subgroups) & 0x70u;
 
 	const uvec2 group_top_left = gl_WorkGroupID.xy * gl_WorkGroupSize.xy;
-	const uint linear_write_offset = gl_SubgroupInvocationID + gl_SubgroupID * ((16u * 16u) / gl_NumSubgroups);
+	const uint linear_write_offset = gl_SubgroupInvocationID + gl_SubgroupID * ((16u * 16u) / num_subgroups);
 
 // Each subgroup fetches contiguous memory in the 16x16 block
 #pragma unroll 4u
 	for (uint b = 0u; b < 4u; b++) {
 		// Compute the linear offset of the work item
-		const uint linear_index = linear_write_offset + (b * gl_SubgroupSize);
+		const uint linear_index = linear_write_offset + (b * subgroup_size);
 		// Extract (x,y) coordinate of sub block
 		const uint xi = linear_index & 0xfu;
 		const uint yi = linear_index >> 4u;
@@ -159,7 +167,7 @@ void main() {
 	barrier();
 #else
 	// Only need to wait on horizontal pass if subgroups fetch less than 2 rows
-	if (gl_SubgroupSize < 8u) {
+	if (subgroup_size < 8u) {
 		barrier();
 	} else {
 		subgroupBarrier();
@@ -167,7 +175,7 @@ void main() {
 #endif
 
 	// Linear index of first computed element in output 16x8 temp_cache (all kernels start on "left")
-	const uint linear_start_0 = gl_SubgroupInvocationID + gl_SubgroupID * (2u * gl_SubgroupSize);
+	const uint linear_start_0 = gl_SubgroupInvocationID + gl_SubgroupID * (2u * subgroup_size);
 
 	vec4 color_0 = vec4(0.);
 	// Compute corresponding 16x8 position in the 16x16 local_cache by promoting index at 8-bit
@@ -183,7 +191,7 @@ void main() {
 	}
 
 	// Stride by subgroup size
-	const uint linear_start_1 = linear_start_0 + gl_SubgroupSize;
+	const uint linear_start_1 = linear_start_0 + subgroup_size;
 	vec4 color_1 = vec4(0.);
 	// Promote 8-bit for second pass
 	const uint start_1 = ((linear_start_1 & 0xf8u) << 1u) + (linear_start_1 & 0x7u) + kernel_offset;
@@ -206,7 +214,7 @@ void main() {
 	barrier();
 #else
 	// Only need to wait on vertical pass if more than 1 subgroup is present
-	if (gl_NumSubgroups > 1u) {
+	if (num_subgroups > 1u) {
 		barrier();
 	} else {
 		subgroupBarrier();

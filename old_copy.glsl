@@ -1,7 +1,8 @@
 #[versions]
 default = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT";
 glow = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT\n#define MODE_GLOW";
-safe = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT\n#define MODE_GLOW\n#define SAFE_THREADING";
+trust_ballot = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT\n#define MODE_GLOW\n#define BALLOT_SUBGROUP_SIZE";
+trust_nothing = "#define MODE_GAUSSIAN_BLUR\n#define DST_IMAGE_8BIT\n#define MODE_GLOW\n#define SAFE_THREADING\n#define BALLOT_SUBGROUP_SIZE";
 
 #[compute]
 

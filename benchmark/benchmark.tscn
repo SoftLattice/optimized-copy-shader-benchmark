@@ -149,13 +149,15 @@ size_flags_horizontal = 3
 [node name="ShaderVariant" type="OptionButton" parent="HBoxContainer/MarginContainer/VBoxContainer2" unique_id=2121964554]
 layout_mode = 2
 selected = 1
-item_count = 3
+item_count = 4
 popup/item_0/text = "default"
 popup/item_0/id = 0
 popup/item_1/text = "glow"
 popup/item_1/id = 1
-popup/item_2/text = "safe"
+popup/item_2/text = "trust_ballot"
 popup/item_2/id = 2
+popup/item_3/text = "trust_nothing"
+popup/item_3/id = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1621542798]
 layout_mode = 2
