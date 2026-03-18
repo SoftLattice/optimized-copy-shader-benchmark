@@ -179,7 +179,7 @@ func _initialize_pipeline(im: Image, shader_version: String) -> void:
 
 func execute_benchmark(display_image: bool = false) -> void:
     rd.submit()
-    rd.sync ()
+    rd.sync()
 
     var compute_list: int = rd.compute_list_begin()
     rd.capture_timestamp("start_calc")
@@ -191,12 +191,18 @@ func execute_benchmark(display_image: bool = false) -> void:
         rd.compute_list_dispatch(compute_list, workgroups_x, workgroups_y, 1)
     rd.compute_list_end()
     rd.capture_timestamp("stop_calc")
-
+    var start_time: int = Time.get_ticks_usec()
     rd.submit()
-    rd.sync ()
+    rd.sync()
+    var stop_time: int = Time.get_ticks_usec()
 
-    var delta: int = rd.get_captured_timestamp_gpu_time(1) - rd.get_captured_timestamp_gpu_time(0)
-    var average_execution_time: float = delta / (SAMPLE_ITERATIONS * 1000.0)
+    var delta: float = 0.
+    if CommonValues.PROFILE_TIMESTAMPS:
+        delta = (rd.get_captured_timestamp_gpu_time(1) - rd.get_captured_timestamp_gpu_time(0)) / 1000.0
+    else:
+        delta = stop_time - start_time
+
+    var average_execution_time: float = delta / SAMPLE_ITERATIONS
 
     var output_bytes: PackedByteArray = rd.texture_get_data(output_rid, 0).duplicate()
     

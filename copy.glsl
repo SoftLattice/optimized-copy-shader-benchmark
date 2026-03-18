@@ -107,14 +107,10 @@ void main() {
 	const vec3 tonemap_col = vec3(0.299, 0.587, 0.114) / max(params.glow_luminance_cap, 6.0);
 #endif
 
-	// First pass copy texture into 16x16 local memory for every 8x8 thread block
-#ifdef BALLOT_SUBGROUP_SIZE
-	const uint subgroup_size = subgroupBallotBitCount(subgroupBallot(true));
-	const uint num_subgroups = (gl_WorkGroupSize.x * gl_WorkGroupSize.y) / subgroup_size;
-#else
 	const uint num_subgroups = gl_NumSubgroups;
 	const uint subgroup_size = (gl_WorkGroupSize.x * gl_WorkGroupSize.y) / num_subgroups;
-#endif
+
+	// First pass copy texture into 16x16 local memory for every 8x8 thread block
 
 	// To avoid bank conflicts, linear index "i" in the 16x16 grid will be placed at
 	// i_write according to the equation:
@@ -163,16 +159,12 @@ void main() {
 	const float kernel[7] = { 0.071303, 0.131514, 0.189879, 0.214607, 0.189879, 0.131514, 0.071303 };
 #endif
 
-#ifdef SAFE_THREADING
-	barrier();
-#else
 	// Only need to wait on horizontal pass if subgroups fetch less than 2 rows
 	if (subgroup_size < 8u) {
 		barrier();
 	} else {
 		subgroupBarrier();
 	}
-#endif
 
 	// Linear index of first computed element in output 16x8 temp_cache (all kernels start on "left")
 	const uint linear_start_0 = gl_SubgroupInvocationID + gl_SubgroupID * (2u * subgroup_size);
@@ -210,16 +202,12 @@ void main() {
 	temp_cache[linear_start_0] = color_0;
 	temp_cache[linear_start_1] = color_1;
 
-#ifdef SAFE_THREADING
-	barrier();
-#else
 	// Only need to wait on vertical pass if more than 1 subgroup is present
 	if (num_subgroups > 1u) {
 		barrier();
 	} else {
 		subgroupBarrier();
 	}
-#endif
 
 	// If destination outside of texture, can stop doing work now
 	if (any(greaterThanEqual(pos, params.section.zw))) {
@@ -247,7 +235,7 @@ void main() {
 	if (bool(params.flags & FLAG_GLOW_FIRST_PASS)) {
 #ifdef GLOW_USE_AUTO_EXPOSURE
 
-		color /= texelFetch(source_auto_exposure, ivec2(0, 0), 0.).r / params.glow_auto_exposure_scale;
+		color /= texelFetch(source_auto_exposure, ivec2(0, 0), 0).r / params.glow_auto_exposure_scale;
 #endif
 		color *= params.glow_exposure;
 

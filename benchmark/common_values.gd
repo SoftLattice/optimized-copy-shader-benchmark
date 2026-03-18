@@ -10,10 +10,12 @@ signal execution_finished();
 @export var shader_dropdown: OptionButton
 @export var image_size: SpinBox
 @export var first_glow_pass: CheckBox
+@export var timestamp_profile: CheckBox
 
 static var singleton: CommonValues
 static var IMAGE_SIZE: int = 1024
-static var FIRST_GLOW_PASS: bool
+static var FIRST_GLOW_PASS: bool = true
+static var PROFILE_TIMESTAMPS: bool = false
 
 const TEST_COUNT: int = 6
 const TEST_DELAY: float = 0.1;
@@ -37,6 +39,7 @@ func _ready() -> void:
 func initialize_data() -> void:
     IMAGE_SIZE = roundi(image_size.value)
     FIRST_GLOW_PASS = first_glow_pass.button_pressed
+    PROFILE_TIMESTAMPS = timestamp_profile.button_pressed
     prepare_image()
     var index: int = shader_dropdown.get_selected_id()
     original_copy._initialize_pipeline(image, shader_dropdown.get_item_text(index))
@@ -136,8 +139,8 @@ func _process_errors() -> void:
     var max_abs_error: float = final_errors["max"]
     var avg_abs_error: float = final_errors["mean"]
 
-    results_label.text = "Old: %f ms" % [old_timing]
-    results_label.text += "\nNew: %f ms\n" % [new_timing]
+    results_label.text = "Old: %f us" % [old_timing]
+    results_label.text += "\nNew: %f us\n" % [new_timing]
     results_label.text += "\nAvg. Speedup: %4.2f" % [average_speedup]
     results_label.text += "\nMax. Error: %5.2f %%" % [max_abs_error * 100.0]
     results_label.text += "\nAvg. Error: %5.2f %%" % [avg_abs_error * 100.0]

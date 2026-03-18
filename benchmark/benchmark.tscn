@@ -23,7 +23,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="Control" type="Control" unique_id=1203827089 node_paths=PackedStringArray("results_label", "original_copy", "new_copy", "shader_dropdown", "image_size", "first_glow_pass")]
+[node name="Control" type="Control" unique_id=1203827089 node_paths=PackedStringArray("results_label", "original_copy", "new_copy", "shader_dropdown", "image_size", "first_glow_pass", "timestamp_profile")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,6 +37,7 @@ new_copy = NodePath("HBoxContainer/PanelContainer/VBoxContainer/ShaderBenchmarkN
 shader_dropdown = NodePath("HBoxContainer/MarginContainer/VBoxContainer2/ShaderVariant")
 image_size = NodePath("HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ImageSize")
 first_glow_pass = NodePath("HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/FirstGlowPass")
+timestamp_profile = NodePath("HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer/TimeStamps")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=428877267]
 layout_mode = 1
@@ -190,17 +191,31 @@ button_pressed = true
 layout_mode = 2
 size_flags_vertical = 6
 
-[node name="Execute" type="Button" parent="HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1342439485]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1275284009]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=2000659956]
+layout_mode = 2
+
+[node name="TimeStamps" type="CheckBox" parent="HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer" unique_id=2092220077]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Profile with
+Timestamps"
+alignment = 1
+
+[node name="Execute" type="Button" parent="HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=1342439485]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/normal = SubResource("StyleBoxFlat_1qedq")
 text = "Start Test"
 
-[connection signal="test_completed" from="." to="HBoxContainer/MarginContainer/VBoxContainer2/Execute" method="set_disabled" binds= [false]]
-[connection signal="test_completed" from="." to="HBoxContainer/MarginContainer/VBoxContainer2/Execute" method="set_text" binds= ["Start Test"]]
+[connection signal="test_completed" from="." to="HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer/Execute" method="set_disabled" binds= [false]]
+[connection signal="test_completed" from="." to="HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer/Execute" method="set_text" binds= ["Start Test"]]
 [connection signal="item_selected" from="HBoxContainer/MarginContainer/VBoxContainer2/ShaderVariant" to="." method="initialize_data" unbinds=1]
 [connection signal="value_changed" from="HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ImageSize" to="." method="initialize_data" unbinds=1]
 [connection signal="toggled" from="HBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/FirstGlowPass" to="." method="initialize_data" unbinds=1]
-[connection signal="pressed" from="HBoxContainer/MarginContainer/VBoxContainer2/Execute" to="." method="_on_execute_benchmark" flags=3]
-[connection signal="pressed" from="HBoxContainer/MarginContainer/VBoxContainer2/Execute" to="HBoxContainer/MarginContainer/VBoxContainer2/Execute" method="set_disabled" binds= [true]]
-[connection signal="pressed" from="HBoxContainer/MarginContainer/VBoxContainer2/Execute" to="HBoxContainer/MarginContainer/VBoxContainer2/Execute" method="set_text" binds= ["Running..."]]
+[connection signal="toggled" from="HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer/TimeStamps" to="." method="initialize_data" unbinds=1]
+[connection signal="pressed" from="HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer/Execute" to="." method="_on_execute_benchmark" flags=3]
+[connection signal="pressed" from="HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer/Execute" to="HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer/Execute" method="set_disabled" binds= [true]]
+[connection signal="pressed" from="HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer/Execute" to="HBoxContainer/MarginContainer/VBoxContainer2/VBoxContainer/Execute" method="set_text" binds= ["Running..."]]
