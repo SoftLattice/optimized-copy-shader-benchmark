@@ -4,6 +4,7 @@ extends Control
 signal test_completed()
 signal execution_finished();
 
+@export var save_dialog: FileDialog;
 @export var results_label: Label
 @export var original_copy: BenchmarkControl
 @export var new_copy: BenchmarkControl
@@ -17,7 +18,7 @@ static var IMAGE_SIZE: int = 1024
 static var FIRST_GLOW_PASS: bool = true
 static var PROFILE_TIMESTAMPS: bool = false
 
-const TEST_COUNT: int = 6
+const TEST_COUNT: int = 8
 const TEST_DELAY: float = 0.1;
 
 static var times: Dictionary[String, float] = {}
@@ -35,6 +36,9 @@ func _ready() -> void:
         noise_channels.append(FastNoiseLite.new())
     singleton = self
     initialize_data.call_deferred()
+    save_dialog.file_selected.connect(test_completed.emit.unbind(1), CONNECT_DEFERRED);
+    save_dialog.canceled.connect(test_completed.emit, CONNECT_DEFERRED);
+    test_completed.emit.call_deferred();
 
 func initialize_data() -> void:
     IMAGE_SIZE = roundi(image_size.value)
@@ -44,7 +48,6 @@ func initialize_data() -> void:
     var index: int = shader_dropdown.get_selected_id()
     original_copy._initialize_pipeline(image, shader_dropdown.get_item_text(index))
     new_copy._initialize_pipeline(image, shader_dropdown.get_item_text(index))
-
 
 # Generate gaussian noise of the specified size
 func prepare_image() -> Image:
@@ -65,9 +68,31 @@ func prepare_image() -> Image:
 
     return image
 
+var new_speeds: Array[float];
+var original_speeds: Array[float];
 
+func save_results() -> void:
+    save_dialog.root_subfolder = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
+    save_dialog.current_file = "results.txt"
+    save_dialog.popup_centered()
+
+func _on_file_selected(path: String) -> void:
+    var file = FileAccess.open(path, FileAccess.WRITE)
+    if file == null:
+        push_error("Failed to open file")
+        return
+    var buffer: Array[String] = []
+    buffer.append("test,old,new")
+    for i in range(new_speeds.size()):
+        buffer.append("%d,%f,%f" % [i, original_speeds[i], new_speeds[i]])
+
+    for line in buffer:
+        file.store_line(line)
+    
 # Zero the test variables, then begin execution with basecase = total iteration count
 func _on_execute_benchmark() -> void:
+    new_speeds = []
+    original_speeds = []
     final_speeds = {"new": 0., "original": 0.}
     final_errors = {"max": 0., "mean": 0.}
     _run_execution(TEST_COUNT)
@@ -101,6 +126,9 @@ func _run_execution(iter: int) -> void:
     # Accumulate speed measurements values
     for keyi in final_speeds:
         final_speeds[keyi] += times[keyi]
+
+    original_speeds.append(times["original"])
+    new_speeds.append(times["new"])
 
     # Compute pixelwise errors
     var color_diff_max: float = 0.;
@@ -145,4 +173,4 @@ func _process_errors() -> void:
     results_label.text += "\nMax. Error: %5.2f %%" % [max_abs_error * 100.0]
     results_label.text += "\nAvg. Error: %5.2f %%" % [avg_abs_error * 100.0]
 
-    test_completed.emit.call_deferred();
+    save_results.call_deferred()
